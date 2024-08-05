@@ -44,6 +44,9 @@ const CrudTable = ({ data, onEdit, onDelete, searchQuery, setSearchQuery }) => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
+  const handleEdit = (index) => {
+    onEdit(index); // Trigger the edit functionality
+  };
   return (
     <div style={{background:"#FBF9F1"}} className="my-10 min-w-[95%] rounded-xl border p-10 flex flex-col gap-10 text-black">
       <div className="flex justify-end gap-5 ">

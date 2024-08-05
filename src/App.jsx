@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import CrudForm from "./components/CrudForm";
 import CrudTable from "./components/CrudTable";
 import Profiles from "./Profiles";
-import { ToastContainer} from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Function to get items from localStorage
 const getLocalItems = () => {
@@ -16,7 +16,7 @@ const App = () => {
   const [items, setItems] = useState(getLocalItems);
   const [currentIndex, setCurrentIndex] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isUpdate,setIsUpdate] = useState(false)
+  const [isUpdate, setIsUpdate] = useState(false);
 
   useEffect(() => {
     // Update localStorage whenever `items` changes
@@ -36,7 +36,7 @@ const App = () => {
 
   const editItem = (index) => {
     setCurrentIndex(index);
-    console.log(index)
+    setIsUpdate(true);
   };
 
   const deleteItem = (index) => {
@@ -46,6 +46,7 @@ const App = () => {
 
   const handleCancel = () => {
     setCurrentIndex(null);
+    setIsUpdate(false);
   };
 
   return (
@@ -60,28 +61,28 @@ const App = () => {
             element={
               <>
                 <CrudForm
-                  setIsUpdate = {setIsUpdate}
+                  setIsUpdate={setIsUpdate}
                   onSubmit={addItem}
                   currentData={
                     currentIndex !== null ? items[currentIndex] : null
                   }
                   onCancel={handleCancel}
+                  isUpdate={isUpdate} // Pass isUpdate flag
                 />
                 <CrudTable
-                  setIsUpdate = {setIsUpdate}
+                  setIsUpdate={setIsUpdate}
                   data={items}
                   onEdit={editItem}
                   onDelete={deleteItem}
                   searchQuery={searchQuery}
                   setSearchQuery={setSearchQuery}
                 />
-                {/* <Link to="/profiles">View Profiles</Link> */}
               </>
             }
           />
           <Route path="/profiles" element={<Profiles />} />
         </Routes>
-        <ToastContainer/>
+        <ToastContainer />
       </div>
     </Router>
   );

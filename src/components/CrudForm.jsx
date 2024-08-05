@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import validationSchema from "../validation/validationSchema";
 import { toast } from "react-toastify";
 
-const CrudForm = ({ onSubmit, currentData, onCancel }) => {
+const CrudForm = ({ onSubmit, currentData, onCancel, isUpdate }) => {
   const [countries, setCountries] = useState([]);
 
   useEffect(() => {
@@ -37,9 +37,9 @@ const CrudForm = ({ onSubmit, currentData, onCancel }) => {
         country: currentData?.address?.country || "Nepal",
         profilePicture: null,
       }}
+      enableReinitialize // This is important to reinitialize the form
       validationSchema={validationSchema}
-      onSubmit={(values,{resetForm}) => {
-        // Handle form submission
+      onSubmit={(values, { resetForm }) => {
         onSubmit({
           ...values,
           address: {
@@ -52,8 +52,8 @@ const CrudForm = ({ onSubmit, currentData, onCancel }) => {
             ? URL.createObjectURL(values.profilePicture)
             : null,
         });
-        toast.success("Form submitted successfully!")
-        resetForm()
+        toast.success("Form submitted successfully!");
+        resetForm();
       }}
     >
       {({ setFieldValue, values }) => (
@@ -116,115 +116,102 @@ const CrudForm = ({ onSubmit, currentData, onCancel }) => {
           </div>
 
           <div className="flex flex-col md:flex-row justify-center gap-10 ">
-          <div className="flex-1">
-            <label>City:</label>
-            <br />
-            <Field
-              className="rounded-md h-10 w-full px-3"
-              type="text"
-              name="city"
-            />
-            <ErrorMessage className="text-red-400" name="city" component="p" />
-          </div>
-          <div className="flex-1">
-            <label>District:</label>
-            <br />
-            <Field
-              className="rounded-md h-10 w-full px-3"
-              type="text"
-              name="district"
-            />
-            <ErrorMessage
-              className="text-red-400"
-              name="district"
-              component="p"
-            />
-          </div>
+            <div className="flex-1">
+              <label>City:</label>
+              <br />
+              <Field
+                className="rounded-md h-10 w-full px-3"
+                type="text"
+                name="city"
+              />
+              <ErrorMessage className="text-red-400" name="city" component="p" />
+            </div>
+            <div className="flex-1">
+              <label>District:</label>
+              <br />
+              <Field
+                className="rounded-md h-10 w-full px-3"
+                type="text"
+                name="district"
+              />
+              <ErrorMessage
+                className="text-red-400"
+                name="district"
+                component="p"
+              />
+            </div>
           </div>
           
           <div className="flex flex-col md:flex-row justify-center gap-10 ">
-          <div className="flex-1">
-            <label>Province:</label>
-            <br />
-            <Field
-              className="rounded-md h-10 w-full px-3"
-              as="select"
-              name="province"
-            >
-              <option value="">Select Province</option>
-              {Array.from({ length: 7 }, (_, i) => i + 1).map((num) => (
-                <option key={num} value={num}>
-                  Province {num}
-                </option>
-              ))}
-            </Field>
-            <ErrorMessage
-              className="text-red-400"
-              name="province"
-              component="p"
-            />
-          </div>
-          <div className="flex-1">
-            <label>Country:</label>
-            <br />
-            <Field
-              className="rounded-md h-10 w-full px-3 text-black"
-              as="select"
-              name="country"
-            >
-              {countries.map((c, index) => (
-                <option key={index} value={c}>
-                  {c}
-                </option>
-              ))}
-            </Field>
-            <ErrorMessage
-              className="text-red-400"
-              name="country"
-              component="p"
-            />
-          </div>
+            <div className="flex-1">
+              <label>Province:</label>
+              <br />
+              <Field
+                className="rounded-md h-10 w-full px-3"
+                as="select"
+                name="province"
+              >
+                <option value="">Select Province</option>
+                {Array.from({ length: 7 }, (_, i) => i + 1).map((num) => (
+                  <option key={num} value={num}>
+                    Province {num}
+                  </option>
+                ))}
+              </Field>
+              <ErrorMessage
+                className="text-red-400"
+                name="province"
+                component="p"
+              />
+            </div>
+            <div className="flex-1">
+              <label>Country:</label>
+              <br />
+              <Field
+                className="rounded-md h-10 w-full px-3 text-black"
+                as="select"
+                name="country"
+              >
+                {countries.map((c, index) => (
+                  <option key={index} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </Field>
+              <ErrorMessage
+                className="text-red-400"
+                name="country"
+                component="p"
+              />
+            </div>
           </div>
           
           <div>
             <label>Profile Picture:</label>
             <br />
             <input
+              className="mt-1"
               type="file"
-              accept="image/png"
-              onChange={(e) =>
-                setFieldValue("profilePicture", e.target.files[0])
-              }
-            />
-            {values.profilePicture &&
-              values.profilePicture.type === "image/png" && (
-                <img
-                  src={URL.createObjectURL(values.profilePicture)}
-                  alt="Profile"
-                  width="100"
-                />
-              )}
-            <ErrorMessage
-              className="text-red-400"
-              name="profilePicture"
-              component="p"
+              onChange={(event) => {
+                setFieldValue("profilePicture", event.currentTarget.files[0]);
+              }}
             />
           </div>
-          <div className="flex justify-end mt-5">
-            <button
-              className="px-4 py-2 rounded-md font-bold bg-blue-100 text-black"
-              type="submit"
-            >
-              Submit
-            </button>
 
-            {/* <button
-              className="px-4 py-2 rounded-md font-bold bg-blue-700 text-white"
+          <div className="flex justify-center gap-5 mt-5">
+            <button
+              type="submit"
+              className="bg-blue-500 text-white py-2 px-4 rounded"
+            >
+              {isUpdate ? "Update" : "Submit"}
+            </button>
+            <button
               type="button"
               onClick={onCancel}
+              className="bg-red-500 text-white py-2 px-4 rounded"
             >
               Cancel
-            </button> */}
+            </button>
           </div>
         </Form>
       )}
